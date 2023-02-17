@@ -1,7 +1,7 @@
 /*
     Date : Thu Feb 16 2023 23:11:06 GMT+0530 (India Standard Time)
     Author : Suman Gurung
-    Description : Implementation of Single Linked List in C++
+    Description : Implementation of Singly Linked List in C++
 */
 
 #include <iostream>
