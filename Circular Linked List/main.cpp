@@ -1,7 +1,7 @@
 /*
-    Date : Fri Feb 17 2023 22:23:56 GMT+0530 (India Standard Time)
+    Date : Tue Mar 07 2023 18:09:16 GMT+0530 (India Standard Time)
     Author : Suman Gurung
-    Description : Implementation of Doubly Linked List in C++
+    Description : Implementation of Circular Linked List in C++
 */
 
 #include <iostream>
@@ -12,75 +12,76 @@ class Node
 public:
     int value;
     Node *next;
-    Node *prev;
 
     Node(int val)
     {
         value = val;
         next = NULL;
-        prev = NULL;
     }
 };
 
-class DoublyLinkedList
+class CircularLinkedList
 {
 public:
-    Node *root;
-    DoublyLinkedList(int value)
+    Node *head, *tail;
+
+    CircularLinkedList(int value)
     {
-        root = new Node(value);
+        head = new Node(value);
+        tail = head;
     }
 
     int getLength()
     {
         int length = 0;
-        Node *current = root;
-        while (current != NULL)
+        Node *current = head;
+
+        current = current->next;
+        length++;
+
+        while (current != head)
         {
             length++;
             current = current->next;
         }
+
         return length;
     }
 
-    void printDoublyLinkedList()
+    void printCircularLinkedList()
     {
-        Node *current = root;
-        cout << "NULL <-> ";
-        while (current != NULL)
+        Node *temp = head;
+
+        cout << temp->value << " -> ";
+        temp = temp->next;
+
+        while (temp != head)
         {
-            cout << current->value << " <-> ";
-            current = current->next;
+            cout << temp->value << " -> ";
+            temp = temp->next;
         }
-        cout << "NULL";
+        cout << "head";
     }
 
     void insertAtStart(int value)
     {
         Node *new_node = new Node(value);
-
-        new_node->next = root;
-        root->prev = new_node;
-        root = new_node;
+        new_node->next = head;
+        head = new_node;
+        tail->next = head;
     }
 
     void insertAtEnd(int value)
     {
         Node *new_node = new Node(value);
-        Node *current = root;
-
-        while (current->next != NULL)
-        {
-            current = current->next;
-        }
-
-        current->next = new_node;
-        new_node->prev = current;
+        tail->next = new_node;
+        new_node->next = head;
+        tail = new_node;
     }
 
     void insertAtPosition(int value, int position)
     {
-        Node *current = root;
+        Node *current = head;
         Node *new_node = new Node(value);
 
         if (position == 0)
@@ -97,42 +98,48 @@ public:
 
         if (position > 0 && position < getLength())
         {
-            current = root;
             for (int i = 0; i < position - 1; i++)
             {
                 current = current->next;
             }
 
             new_node->next = current->next;
-            new_node->prev = current;
-            current->next->prev = new_node;
+
             current->next = new_node;
             return;
         }
+
         cout << "Position Error\n";
         return;
     }
 
     void deleteAtStart()
     {
-        Node *current = root;
-        root = current->next;
-        root->prev = NULL;
+        Node *current = head;
+        tail->next = current->next;
+        head = current->next;
         delete current;
     }
 
     void deleteAtEnd()
     {
-        Node *current = root;
+        Node *current = head;
 
-        while (current->next->next != NULL)
+        while (current->next->next != head)
         {
             current = current->next;
         }
 
-        Node *last_node = current->next;
-        current->next = NULL;
-        delete last_node;
+        // current points to second last node
+        Node *tail_node = current->next;
+
+        // second last node points to NULL
+        current->next = tail_node->next;
+
+        tail = current;
+
+        // delete last node
+        delete tail_node;
     }
 
     void deleteAtPosition(int position)
@@ -151,7 +158,7 @@ public:
 
         if (position > 0 && position < getLength() - 1)
         {
-            Node *current = root;
+            Node *current = head;
             Node *temp;
             for (int i = 0; i < position - 1; i++)
             {
@@ -160,7 +167,6 @@ public:
 
             temp = current->next;
             current->next = temp->next;
-            temp->next->prev = current;
             delete temp;
 
             return;
@@ -170,12 +176,14 @@ public:
         return;
     }
 
-    void printDoublyLinkedListInfo()
+    void printCircularLinkedListInfo()
     {
-        Node *current = root;
-        while (current != NULL)
+        Node *current = head;
+        cout << current << "\t" << current->next << endl;
+        current = current->next;
+        while (current != head)
         {
-            cout << current->prev << "\t" << current << "\t" << current->next << endl;
+            cout << current << "\t" << current->next << endl;
             current = current->next;
         }
     }
@@ -183,11 +191,11 @@ public:
 
 int main()
 {
-    DoublyLinkedList *l1 = new DoublyLinkedList(1);
-    l1->insertAtStart(0);
-    l1->insertAtEnd(2);
-    l1->insertAtPosition(10, 2);
-    l1->deleteAtPosition(3);
-    l1->printDoublyLinkedListInfo();
-    l1->printDoublyLinkedList();
+    CircularLinkedList *cll = new CircularLinkedList(1);
+    cll->insertAtStart(0);
+    cll->insertAtEnd(2);
+    cll->insertAtPosition(10, 3);
+    cll->deleteAtPosition(2);
+    cll->printCircularLinkedListInfo();
+    cll->printCircularLinkedList();
 }

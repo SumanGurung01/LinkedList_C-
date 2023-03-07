@@ -92,13 +92,13 @@ public:
             return;
         }
 
-        if (position == getLength() - 1)
+        if (position == getLength())
         {
             insertAtEnd(value);
             return;
         }
 
-        if (position > 0 && position < getLength() - 1)
+        if (position > 0 && position < getLength())
         {
             current = root;
             for (int i = 0; i < position - 1; i++)
@@ -191,7 +191,7 @@ int main()
 
     l1->insertAtEnd(2);
 
-    l1->insertAtPosition(10, 1);
+    l1->insertAtPosition(10, 2);
 
     l1->deleteAtPosition(1);
 
